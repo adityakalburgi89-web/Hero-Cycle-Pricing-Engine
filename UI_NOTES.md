@@ -2,16 +2,18 @@
 
 ## Layout
 - Single-page calculator
-- Parts selector (multi-select)
-- Region and material dropdowns
-- Calculate button triggers price breakdown
+- Multi-select parts list
+- Date picker for time-sensitive pricing
+- Price breakdown with per-component costs
+- Pricing history shown when a single part is selected
 
 ## Design
 - Clean, minimal, neutral palette
-- Card-based layout for controls and results
-- Responsive for desktop and mobile
+- Card-based layout
+- Responsive
 
 ## States
-- Loading: parts list fetched on page load
-- Empty: no parts selected shows alert
-- Result: breakdown table with per-part and total price
+- Loading: parts fetched on page load
+- Empty: no selection shows alert
+- Result: breakdown table, total, queried date info
+- History: shown on single-part select

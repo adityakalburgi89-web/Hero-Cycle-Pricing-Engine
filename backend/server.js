@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const pricingRoutes = require('./src/routes/pricingRoutes');
+const connectDB = require('./config/db');
+const pricingRoutes = require('./routes/pricingRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,8 +15,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 });
 
 module.exports = app;

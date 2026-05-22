@@ -1,49 +1,66 @@
-const API_BASE = 'http://localhost:5000/api';
+const API = 'http://localhost:5000/api';
 
 const partSelect = document.getElementById('partSelect');
-const regionSelect = document.getElementById('regionSelect');
-const materialSelect = document.getElementById('materialSelect');
+const dateInput = document.getElementById('dateInput');
 const calculateBtn = document.getElementById('calculateBtn');
 const resultSection = document.getElementById('result');
 const breakdownDiv = document.getElementById('breakdown');
 const totalP = document.getElementById('total');
+const dateInfoP = document.getElementById('dateInfo');
+const historySection = document.getElementById('history');
+const historyList = document.getElementById('historyList');
 
 async function loadParts() {
-  try {
-    const res = await fetch(`${API_BASE}/pricing/parts`);
-    const parts = await res.json();
-    partSelect.innerHTML = parts.map((p) =>
-      `<option value="${p.id}">${p.name} - $${p.basePrice}</option>`
-    ).join('');
-  } catch (err) {
-    console.error('Failed to load parts:', err);
-  }
+  const res = await fetch(`${API}/pricing/parts`);
+  const parts = await res.json();
+  partSelect.innerHTML = parts
+    .map((p) => `<option value="${p._id}">${p.name} - $${p.basePrice}</option>`)
+    .join('');
 }
 
 calculateBtn.addEventListener('click', async () => {
-  const selectedIds = Array.from(partSelect.selectedOptions).map((o) => Number(o.value));
-  if (selectedIds.length === 0) return alert('Select at least one part.');
+  const partIds = Array.from(partSelect.selectedOptions).map((o) => o.value);
+  if (!partIds.length) return alert('Select at least one part.');
 
-  try {
-    const res = await fetch(`${API_BASE}/pricing/calculate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        partIds: selectedIds,
-        region: regionSelect.value,
-        material: materialSelect.value,
-      }),
-    });
-    const data = await res.json();
+  const date = dateInput.value || undefined;
 
-    breakdownDiv.innerHTML = data.parts
-      .map((p) => `<div class="breakdown-item"><span>${p.name}</span><span>$${p.calculatedPrice}</span></div>`)
-      .join('');
-    totalP.textContent = `Total: $${data.total}`;
-    resultSection.classList.remove('hidden');
-  } catch (err) {
-    console.error('Calculation failed:', err);
+  const res = await fetch(`${API}/pricing/calculate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ partIds, date }),
+  });
+
+  const data = await res.json();
+
+  breakdownDiv.innerHTML = data.parts
+    .map(
+      (p) =>
+        `<div class="breakdown-item"><span>${p.name} (${p.category})</span><span>$${p.effectivePrice}</span></div>`
+    )
+    .join('');
+  totalP.textContent = `Total: $${data.total}`;
+  dateInfoP.textContent = `Pricing as of: ${new Date(data.queriedDate).toLocaleDateString()}`;
+  resultSection.classList.remove('hidden');
+});
+
+partSelect.addEventListener('change', async () => {
+  const selected = Array.from(partSelect.selectedOptions);
+  if (selected.length === 1) {
+    const partId = selected[0].value;
+    const res = await fetch(`${API}/pricing/history/${partId}`);
+    const history = await res.json();
+    if (history.length) {
+      historyList.innerHTML = history
+        .map(
+          (h) =>
+            `<div class="history-entry"><span>${new Date(h.date).toLocaleDateString()}</span><span>$${h.price} ${h.note ? '- ' + h.note : ''}</span></div>`
+        )
+        .join('');
+      historySection.classList.remove('hidden');
+      return;
+    }
   }
+  historySection.classList.add('hidden');
 });
 
 loadParts();

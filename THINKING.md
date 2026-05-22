@@ -1,17 +1,18 @@
 # Thinking Log
 
-## Initial Setup
-- Simple pricing engine for bicycle parts
-- Region-based and material-based multipliers
-- Express backend, vanilla JS frontend
+## Architecture
+- Simple Express API with MongoDB via Mongoose
+- PricingService handles business logic, separate from routes
+- Part model stores base prices
+- PricingHistory model stores time-sensitive price changes
 
 ## Pricing Logic
-- Base prices from seed data
-- Region multipliers: US 1.0, EU 1.15, Asia 0.9
-- Material multipliers: Aluminum 1.0, Steel 0.85, Carbon 1.5, Leather 1.2
+- Default price = part.basePrice
+- If PricingHistory exists with date <= query date, use that price
+- Supports arbitrary historical queries
 
 ## Future Ideas
-- Add user auth
-- Persist to database
-- Add discount rules
-- Admin panel for managing parts
+- Region and material multipliers
+- Discount rules engine
+- Admin dashboard for managing parts and history
+- Real-time price change WebSocket

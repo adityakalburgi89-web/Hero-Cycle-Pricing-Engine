@@ -12,38 +12,29 @@
       <h1>Hero Cycle Pricing Engine</h1>
     </header>
 
-    <main>
-      <section id="controls">
-        <div>
-          <label for="partSelect">Select Parts</label>
-          <select id="partSelect" multiple></select>
-        </div>
-        <div>
-          <label for="regionSelect">Region</label>
-          <select id="regionSelect">
-            <option value="us">US</option>
-            <option value="eu">Europe</option>
-            <option value="asia">Asia</option>
-          </select>
-        </div>
-        <div>
-          <label for="materialSelect">Material</label>
-          <select id="materialSelect">
-            <option value="aluminum">Aluminum</option>
-            <option value="steel">Steel</option>
-            <option value="carbon">Carbon</option>
-            <option value="leather">Leather</option>
-          </select>
-        </div>
-        <button id="calculateBtn">Calculate Price</button>
-      </section>
+    <section id="controls">
+      <div class="field">
+        <label for="partSelect">Select Parts</label>
+        <select id="partSelect" multiple></select>
+      </div>
+      <div class="field">
+        <label for="dateInput">Pricing Date</label>
+        <input type="date" id="dateInput" />
+      </div>
+      <button id="calculateBtn">Calculate Price</button>
+    </section>
 
-      <section id="result" class="hidden">
-        <h2>Price Breakdown</h2>
-        <div id="breakdown"></div>
-        <p id="total"></p>
-      </section>
-    </main>
+    <section id="result" class="hidden">
+      <h2>Price Breakdown</h2>
+      <div id="breakdown"></div>
+      <p id="total"></p>
+      <p id="dateInfo"></p>
+    </section>
+
+    <section id="history" class="hidden">
+      <h2>Pricing History</h2>
+      <div id="historyList"></div>
+    </section>
   </div>
   <script src="script.js"></script>
 </body>
