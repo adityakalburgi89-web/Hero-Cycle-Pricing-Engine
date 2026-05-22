@@ -5,109 +5,184 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #f4f4f9;
-  color: #1e1e2e;
-  padding: 2rem;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  padding: 2rem 1rem;
+  min-height: 100vh;
 }
 
 #app {
-  max-width: 800px;
+  max-width: 780px;
   margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 header h1 {
   font-size: 1.75rem;
-  margin-bottom: 2rem;
-  color: #2a2a40;
+  font-weight: 700;
+  color: #1a1a2e;
 }
 
-#controls {
+.subtitle {
+  color: #6b7280;
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+}
+
+#configurator,
+#result {
   background: #fff;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
+  border-radius: 10px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+#configurator {
+  margin-bottom: 1.5rem;
+}
+
+#configurator h2,
+#result h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: #1a1a2e;
+}
+
+#dropdowns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  #dropdowns {
+    grid-template-columns: 1fr;
+  }
 }
 
 .field label {
   display: block;
+  font-size: 0.85rem;
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  color: #374151;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-#partSelect {
-  width: 100%;
-  height: 120px;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
+.field select,
 #dateInput {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: #fff;
+  color: #1a1a2e;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.field select:focus,
+#dateInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.row .field {
+  flex: 1;
+  min-width: 180px;
 }
 
 #calculateBtn {
-  align-self: flex-start;
-  padding: 0.6rem 1.5rem;
-  background: #2a2a40;
+  padding: 0.55rem 1.75rem;
+  background: #2563eb;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 1rem;
+  white-space: nowrap;
+  transition: background 0.15s;
 }
 
 #calculateBtn:hover {
-  background: #3d3d5c;
+  background: #1d4ed8;
 }
 
-#result,
-#history {
-  margin-top: 2rem;
-  background: #fff;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+#calculateBtn:active {
+  background: #1e40af;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-#result h2,
-#history h2 {
-  margin-bottom: 1rem;
+#breakdown {
+  margin-bottom: 0.5rem;
 }
 
-.breakdown-item {
+.breakdown-row {
   display: flex;
   justify-content: space-between;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid #eee;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
 }
 
-#total {
-  font-size: 1.25rem;
-  font-weight: 700;
-  text-align: right;
+.breakdown-row:last-of-type {
+  border-bottom: none;
+}
+
+.breakdown-row .part-name {
+  font-weight: 500;
+}
+
+.breakdown-row .part-component {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-left: 0.5rem;
+}
+
+.breakdown-row .part-price {
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+#totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 2px solid #e5e7eb;
   margin-top: 0.5rem;
 }
 
-#dateInfo {
-  font-size: 0.9rem;
-  color: #666;
-  margin-top: 0.25rem;
+#total {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a2e;
 }
 
-.history-entry {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
+#dateInfo {
+  font-size: 0.85rem;
+  color: #6b7280;
 }

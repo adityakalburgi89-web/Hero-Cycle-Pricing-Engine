@@ -3,37 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hero Cycle Pricing Engine</title>
+  <title>Hero Cycle Pricing Configurator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="app">
     <header>
-      <h1>Hero Cycle Pricing Engine</h1>
+      <h1>Hero Cycle Pricing Configurator</h1>
+      <p class="subtitle">Build your cycle and see the price breakdown</p>
     </header>
 
-    <section id="controls">
-      <div class="field">
-        <label for="partSelect">Select Parts</label>
-        <select id="partSelect" multiple></select>
+    <section id="configurator">
+      <h2>Select Components</h2>
+      <div id="dropdowns"></div>
+
+      <div class="row">
+        <div class="field">
+          <label for="dateInput">Pricing Date</label>
+          <input type="date" id="dateInput" />
+        </div>
+        <button id="calculateBtn">Calculate Price</button>
       </div>
-      <div class="field">
-        <label for="dateInput">Pricing Date</label>
-        <input type="date" id="dateInput" />
-      </div>
-      <button id="calculateBtn">Calculate Price</button>
     </section>
 
     <section id="result" class="hidden">
       <h2>Price Breakdown</h2>
       <div id="breakdown"></div>
-      <p id="total"></p>
-      <p id="dateInfo"></p>
-    </section>
-
-    <section id="history" class="hidden">
-      <h2>Pricing History</h2>
-      <div id="historyList"></div>
+      <div id="totalRow">
+        <span id="dateInfo"></span>
+        <span id="total"></span>
+      </div>
     </section>
   </div>
   <script src="script.js"></script>

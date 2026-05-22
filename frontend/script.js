@@ -1,14 +1,23 @@
 const API = 'http://localhost:5000/api';
 
-const partSelect = document.getElementById('partSelect');
+const dropdownsEl = document.getElementById('dropdowns');
 const dateInput = document.getElementById('dateInput');
 const calculateBtn = document.getElementById('calculateBtn');
 const resultSection = document.getElementById('result');
 const breakdownDiv = document.getElementById('breakdown');
 const totalP = document.getElementById('total');
 const dateInfoP = document.getElementById('dateInfo');
-const historySection = document.getElementById('history');
-const historyList = document.getElementById('historyList');
+
+const componentLabels = {
+  frame: 'Frame',
+  handlebar: 'Handlebar',
+  brakes: 'Brakes',
+  wheels: 'Wheels',
+  chain: 'Chain Assembly',
+  seating: 'Seating',
+};
+
+const componentOrder = ['frame', 'handlebar', 'brakes', 'wheels', 'chain', 'seating'];
 
 function latestPrice(part) {
   const sorted = [...part.priceHistory].sort(
@@ -17,20 +26,53 @@ function latestPrice(part) {
   return sorted.length > 0 ? sorted[0].price : 0;
 }
 
-async function loadParts() {
-  const res = await fetch(`${API}/pricing/parts`);
-  const parts = await res.json();
-  partSelect.innerHTML = parts
-    .map(
-      (p) =>
-        `<option value="${p.name}">${p.name} - $${latestPrice(p)}</option>`
-    )
+function formatPartName(name) {
+  return name
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function buildDropdowns(parts) {
+  const grouped = {};
+  for (const part of parts) {
+    if (!grouped[part.component]) grouped[part.component] = [];
+    grouped[part.component].push(part);
+  }
+
+  dropdownsEl.innerHTML = componentOrder
+    .map((comp) => {
+      const compParts = grouped[comp] || [];
+      const label = componentLabels[comp] || comp;
+
+      const options = compParts
+        .map(
+          (p) =>
+            `<option value="${p.name}">${formatPartName(p.name)} — $${latestPrice(p)}</option>`
+        )
+        .join('');
+
+      return `
+        <div class="field">
+          <label for="comp-${comp}">${label}</label>
+          <select id="comp-${comp}" class="part-select">
+            <option value="">— Select —</option>
+            ${options}
+          </select>
+        </div>
+      `;
+    })
     .join('');
 }
 
 calculateBtn.addEventListener('click', async () => {
-  const selected = Array.from(partSelect.selectedOptions).map((o) => o.value);
-  if (!selected.length) return alert('Select at least one part.');
+  const selects = document.querySelectorAll('.part-select');
+  const selected = [];
+
+  for (const sel of selects) {
+    if (sel.value) selected.push(sel.value);
+  }
+
+  if (selected.length === 0) return alert('Select at least one component.');
 
   const date = dateInput.value || undefined;
 
@@ -45,35 +87,25 @@ calculateBtn.addEventListener('click', async () => {
   breakdownDiv.innerHTML = data.parts
     .map(
       (p) =>
-        `<div class="breakdown-item"><span>${p.name} (${p.component})</span><span>$${p.effectivePrice}</span></div>`
+        `<div class="breakdown-row">
+          <div>
+            <span class="part-name">${formatPartName(p.name)}</span>
+            <span class="part-component">${p.component}</span>
+          </div>
+          <span class="part-price">$${p.effectivePrice}</span>
+        </div>`
     )
     .join('');
+
   totalP.textContent = `Total: $${data.total}`;
-  dateInfoP.textContent = `Pricing as of: ${new Date(data.queriedDate).toLocaleDateString()}`;
+  dateInfoP.textContent = `Pricing as of ${new Date(data.queriedDate).toLocaleDateString()}`;
   resultSection.classList.remove('hidden');
 });
 
-partSelect.addEventListener('change', async () => {
-  const selected = Array.from(partSelect.selectedOptions);
-  if (selected.length === 1) {
-    const partName = selected[0].value;
-    const res = await fetch(`${API}/pricing/history/${partName}`);
-    const history = await res.json();
-    if (history.length) {
-      historyList.innerHTML = history
-        .map(
-          (h) =>
-            `<div class="history-entry">
-              <span>${new Date(h.validFrom).toLocaleDateString()} ${h.validUntil ? '→ ' + new Date(h.validUntil).toLocaleDateString() : '→ present'}</span>
-              <span>$${h.price}</span>
-            </div>`
-        )
-        .join('');
-      historySection.classList.remove('hidden');
-      return;
-    }
-  }
-  historySection.classList.add('hidden');
-});
+async function init() {
+  const res = await fetch(`${API}/pricing/parts`);
+  const parts = await res.json();
+  buildDropdowns(parts);
+}
 
-loadParts();
+init();
