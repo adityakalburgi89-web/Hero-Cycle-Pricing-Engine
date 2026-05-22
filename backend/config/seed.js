@@ -5,145 +5,144 @@ const Part = require('../models/Part');
 const parts = [
   // ── Frames ──
   {
-    name: 'Standard Frame',
+    name: 'steel_frame',
     component: 'frame',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: new Date('2024-12-31'), price: 200 },
-      { validFrom: new Date('2025-01-01'), validUntil: null, price: 220 },
+      { validFrom: new Date('2015-01-01'), validUntil: new Date('2020-12-31'), price: 180 },
+      { validFrom: new Date('2021-01-01'), validUntil: null, price: 200 },
     ],
   },
   {
-    name: 'Premium Frame',
+    name: 'aluminum_frame',
     component: 'frame',
     priceHistory: [
-      { validFrom: new Date('2023-06-01'), validUntil: null, price: 350 },
+      { validFrom: new Date('2016-01-01'), validUntil: null, price: 250 },
     ],
   },
   {
-    name: 'Compact Frame',
+    name: 'carbon_frame',
     component: 'frame',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: new Date('2024-05-31'), price: 180 },
-      { validFrom: new Date('2024-06-01'), validUntil: null, price: 195 },
+      { validFrom: new Date('2018-06-01'), validUntil: null, price: 400 },
     ],
   },
 
   // ── Handlebars ──
   {
-    name: 'Flat Handlebar',
+    name: 'flat_handlebar',
     component: 'handlebar',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: null, price: 25 },
+      { validFrom: new Date('2015-01-01'), validUntil: null, price: 25 },
     ],
   },
   {
-    name: 'Drop Handlebar',
+    name: 'drop_handlebar',
     component: 'handlebar',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: new Date('2025-02-28'), price: 45 },
-      { validFrom: new Date('2025-03-01'), validUntil: null, price: 50 },
+      { validFrom: new Date('2015-01-01'), validUntil: new Date('2024-12-31'), price: 45 },
+      { validFrom: new Date('2025-01-01'), validUntil: null, price: 50 },
     ],
   },
   {
-    name: 'Riser Handlebar',
+    name: 'riser_handlebar',
     component: 'handlebar',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: null, price: 35 },
+      { validFrom: new Date('2016-01-01'), validUntil: null, price: 35 },
     ],
   },
 
   // ── Brakes ──
   {
-    name: 'Rim Brake Set',
+    name: 'rim_brake_set',
     component: 'brakes',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: null, price: 30 },
+      { validFrom: new Date('2015-01-01'), validUntil: null, price: 30 },
     ],
   },
   {
-    name: 'Disc Brake Set',
+    name: 'disc_brake_set',
     component: 'brakes',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: new Date('2024-12-31'), price: 60 },
+      { validFrom: new Date('2015-01-01'), validUntil: new Date('2024-12-31'), price: 60 },
       { validFrom: new Date('2025-01-01'), validUntil: null, price: 55 },
     ],
   },
   {
-    name: 'Hydraulic Brake Set',
+    name: 'hydraulic_brake_set',
     component: 'brakes',
     priceHistory: [
-      { validFrom: new Date('2024-01-01'), validUntil: null, price: 120 },
+      { validFrom: new Date('2018-01-01'), validUntil: null, price: 120 },
     ],
   },
 
-  // ── Wheels ──
+  // ── Wheels / Tyres ──
   {
-    name: 'Standard Wheel Set',
+    name: 'tubeless_tyre',
     component: 'wheels',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: null, price: 150 },
+      { validFrom: new Date('2015-06-01'), validUntil: null, price: 120 },
     ],
   },
   {
-    name: 'Performance Wheel Set',
+    name: 'standard_tyre',
     component: 'wheels',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: new Date('2025-05-31'), price: 250 },
-      { validFrom: new Date('2025-06-01'), validUntil: null, price: 280 },
+      { validFrom: new Date('2015-01-01'), validUntil: null, price: 80 },
     ],
   },
   {
-    name: 'Carbon Wheel Set',
+    name: 'performance_tyre',
     component: 'wheels',
     priceHistory: [
-      { validFrom: new Date('2024-01-01'), validUntil: null, price: 450 },
+      { validFrom: new Date('2017-01-01'), validUntil: new Date('2024-05-31'), price: 160 },
+      { validFrom: new Date('2024-06-01'), validUntil: null, price: 175 },
     ],
   },
 
   // ── Chain Assemblies ──
   {
-    name: 'Standard Chain',
+    name: 'standard_chain',
     component: 'chain',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: null, price: 20 },
+      { validFrom: new Date('2015-01-01'), validUntil: null, price: 20 },
     ],
   },
   {
-    name: 'Performance Chain',
+    name: 'performance_chain',
     component: 'chain',
     priceHistory: [
-      { validFrom: new Date('2023-06-01'), validUntil: null, price: 40 },
+      { validFrom: new Date('2016-06-01'), validUntil: null, price: 40 },
     ],
   },
   {
-    name: 'Chainring Set',
+    name: 'chainring_set',
     component: 'chain',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: null, price: 55 },
+      { validFrom: new Date('2015-01-01'), validUntil: null, price: 55 },
     ],
   },
 
   // ── Seating ──
   {
-    name: 'Basic Saddle',
+    name: 'basic_saddle',
     component: 'seating',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: null, price: 25 },
+      { validFrom: new Date('2015-01-01'), validUntil: null, price: 25 },
     ],
   },
   {
-    name: 'Comfort Saddle',
+    name: 'comfort_saddle',
     component: 'seating',
     priceHistory: [
-      { validFrom: new Date('2023-01-01'), validUntil: new Date('2024-08-31'), price: 45 },
+      { validFrom: new Date('2015-01-01'), validUntil: new Date('2024-08-31'), price: 45 },
       { validFrom: new Date('2024-09-01'), validUntil: null, price: 50 },
     ],
   },
   {
-    name: 'Racing Saddle',
+    name: 'racing_saddle',
     component: 'seating',
     priceHistory: [
-      { validFrom: new Date('2024-01-01'), validUntil: null, price: 80 },
+      { validFrom: new Date('2017-01-01'), validUntil: null, price: 80 },
     ],
   },
 ];

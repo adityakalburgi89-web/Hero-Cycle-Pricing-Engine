@@ -8,10 +8,10 @@ function findPriceAtDate(priceHistory, queryDate) {
   return valid.length > 0 ? valid[0] : null;
 }
 
-async function calculatePrice(partIds, date) {
+async function calculatePrice({ date, partNames }) {
   const queryDate = date ? new Date(date) : new Date();
 
-  const parts = await Part.find({ _id: { $in: partIds } });
+  const parts = await Part.find({ name: { $in: partNames } });
 
   let total = 0;
   const breakdown = [];
@@ -23,7 +23,6 @@ async function calculatePrice(partIds, date) {
     total += effectivePrice;
 
     breakdown.push({
-      partId: part._id,
       name: part.name,
       component: part.component,
       effectivePrice,
@@ -39,8 +38,8 @@ async function calculatePrice(partIds, date) {
   };
 }
 
-async function getPricingHistory(partId) {
-  const part = await Part.findById(partId);
+async function getPricingHistory(partName) {
+  const part = await Part.findOne({ name: partName });
   return part ? part.priceHistory.sort((a, b) => b.validFrom - a.validFrom) : [];
 }
 

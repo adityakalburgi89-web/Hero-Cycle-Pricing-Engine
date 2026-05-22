@@ -12,53 +12,89 @@ before(async () => {
 });
 
 describe('pricingService', () => {
-  it('should use price from matching history entry', async () => {
-    const [part] = await Part.insertMany([
+  it('should return price for a part valid on the given date', async () => {
+    await Part.insertMany([
       {
-        name: 'Frame',
+        name: 'steel_frame',
         component: 'frame',
         priceHistory: [
-          { validFrom: new Date('2023-01-01'), validUntil: null, price: 200 },
+          { validFrom: new Date('2015-01-01'), validUntil: null, price: 200 },
         ],
       },
     ]);
 
-    const result = await calculatePrice([part._id], '2024-06-01');
+    const result = await calculatePrice({
+      date: '2016-12-15',
+      partNames: ['steel_frame'],
+    });
+
     assert.strictEqual(result.total, 200);
+    assert.strictEqual(result.parts[0].component, 'frame');
   });
 
-  it('should use updated price after validFrom date', async () => {
-    const [part] = await Part.insertMany([
+  it('should use the correct price entry for a date range', async () => {
+    await Part.insertMany([
       {
-        name: 'Frame',
+        name: 'steel_frame',
         component: 'frame',
         priceHistory: [
-          { validFrom: new Date('2023-01-01'), validUntil: new Date('2024-12-31'), price: 200 },
-          { validFrom: new Date('2025-01-01'), validUntil: null, price: 220 },
+          { validFrom: new Date('2015-01-01'), validUntil: new Date('2020-12-31'), price: 180 },
+          { validFrom: new Date('2021-01-01'), validUntil: null, price: 200 },
         ],
       },
     ]);
 
-    const result = await calculatePrice([part._id], '2025-06-01');
-    assert.strictEqual(result.total, 220);
+    const oldPrice = await calculatePrice({
+      date: '2016-12-15',
+      partNames: ['steel_frame'],
+    });
+    assert.strictEqual(oldPrice.total, 180);
+
+    const newPrice = await calculatePrice({
+      date: '2022-06-01',
+      partNames: ['steel_frame'],
+    });
+    assert.strictEqual(newPrice.total, 200);
   });
 
-  it('should sum prices for multiple parts', async () => {
-    const parts = await Part.insertMany([
+  it('should calculate total across multiple parts', async () => {
+    await Part.insertMany([
       {
-        name: 'Frame',
+        name: 'steel_frame',
         component: 'frame',
-        priceHistory: [{ validFrom: new Date('2023-01-01'), validUntil: null, price: 200 }],
+        priceHistory: [{ validFrom: new Date('2015-01-01'), validUntil: null, price: 200 }],
       },
       {
-        name: 'Wheel Set',
+        name: 'tubeless_tyre',
         component: 'wheels',
-        priceHistory: [{ validFrom: new Date('2023-01-01'), validUntil: null, price: 150 }],
+        priceHistory: [{ validFrom: new Date('2015-06-01'), validUntil: null, price: 120 }],
       },
     ]);
 
-    const result = await calculatePrice(parts.map((p) => p._id));
-    assert.strictEqual(result.total, 350);
+    const result = await calculatePrice({
+      date: '2016-12-15',
+      partNames: ['steel_frame', 'tubeless_tyre'],
+    });
+
+    assert.strictEqual(result.total, 320);
     assert.strictEqual(result.parts.length, 2);
+  });
+
+  it('should handle parts that are not found gracefully', async () => {
+    await Part.insertMany([
+      {
+        name: 'steel_frame',
+        component: 'frame',
+        priceHistory: [{ validFrom: new Date('2015-01-01'), validUntil: null, price: 200 }],
+      },
+    ]);
+
+    const result = await calculatePrice({
+      date: '2016-12-15',
+      partNames: ['steel_frame', 'nonexistent_part'],
+    });
+
+    assert.strictEqual(result.parts.length, 1);
+    assert.strictEqual(result.total, 200);
   });
 });

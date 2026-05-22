@@ -23,21 +23,21 @@ async function loadParts() {
   partSelect.innerHTML = parts
     .map(
       (p) =>
-        `<option value="${p._id}">${p.name} - $${latestPrice(p)}</option>`
+        `<option value="${p.name}">${p.name} - $${latestPrice(p)}</option>`
     )
     .join('');
 }
 
 calculateBtn.addEventListener('click', async () => {
-  const partIds = Array.from(partSelect.selectedOptions).map((o) => o.value);
-  if (!partIds.length) return alert('Select at least one part.');
+  const selected = Array.from(partSelect.selectedOptions).map((o) => o.value);
+  if (!selected.length) return alert('Select at least one part.');
 
   const date = dateInput.value || undefined;
 
   const res = await fetch(`${API}/pricing/calculate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ partIds, date }),
+    body: JSON.stringify({ date, parts: selected }),
   });
 
   const data = await res.json();
@@ -56,8 +56,8 @@ calculateBtn.addEventListener('click', async () => {
 partSelect.addEventListener('change', async () => {
   const selected = Array.from(partSelect.selectedOptions);
   if (selected.length === 1) {
-    const partId = selected[0].value;
-    const res = await fetch(`${API}/pricing/history/${partId}`);
+    const partName = selected[0].value;
+    const res = await fetch(`${API}/pricing/history/${partName}`);
     const history = await res.json();
     if (history.length) {
       historyList.innerHTML = history
