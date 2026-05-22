@@ -1,4 +1,4 @@
-# 🚲 Hero Cycle Pricing Engine - Full-Stack Monorepo
+# Hero Cycle Pricing Engine - Full-Stack Monorepo
 
 Welcome to the **Hero Cycle Pricing Engine Boilerplate**, a production-ready, recruiter-level full-stack application built using a clean monorepo architecture. 
 
@@ -6,9 +6,9 @@ This repository leverages **TypeScript** end-to-end to maximize type-safety, mai
 
 ---
 
-## 🏗️ Architecture & Core Features
+## Architecture & Core Features
 
-### 💻 Frontend (React + Vite)
+### Frontend (React + Vite)
 *   **Vite Toolchain**: Ultra-fast bundler and hot-module replacement (HMR).
 *   **State Management (Zustand)**: Lightweight, reactive state management using a hook-based API, integrated with **Zustand Devtools** for clear debugging state inspection.
 *   **Axios HTTP Pipeline**: Custom configured client located in `frontend/src/config/api.ts` with unified request/response interceptors. Formats API response payloads, injects auth headers automatically, and captures network anomalies globally.
@@ -16,7 +16,7 @@ This repository leverages **TypeScript** end-to-end to maximize type-safety, mai
 *   **Pricing Simulator Widget**: A highly interactable playground letting developers adjust cycle properties (quantity, material, region) to compile active business pricing rules in real-time.
 *   **No DB Fallback/Simulation**: If your database is not yet migrated, the dashboard detects it and activates a local state-based database simulation so the application works **out of the box** without configuration!
 
-### ⚙️ Backend (Node.js + Express + Prisma)
+### Backend (Node.js + Express + Prisma)
 *   **3-Tier MVC Architecture**: Explicit separating layer between HTTP router declarations, controller logic handlers, database persistence, and system utilities.
 *   **Prisma ORM**: Integration with **PostgreSQL** with predefined models for `User` and `PricingRule`, and safe indexing properties.
 *   **Zod Environment validation**: The server parses and strictly validates `.env` variables at boot time inside `backend/src/config/env.ts`, aborting execution immediately with descriptive error logging if parameters are invalid.
@@ -26,7 +26,7 @@ This repository leverages **TypeScript** end-to-end to maximize type-safety, mai
 
 ---
 
-## 📂 Folder Structure
+## Folder Structure
 
 ```
 hero-cycle-pricing-engine/
@@ -65,7 +65,7 @@ hero-cycle-pricing-engine/
 
 ---
 
-## ⚡ Quickstart Guide
+## Quickstart Guide
 
 ### 1. Install Dependencies
 Run from the root directory to install all packages in the backend and frontend workspaces using npm:
@@ -102,7 +102,7 @@ npm run dev
 
 ---
 
-## 🧩 Scripts Directory
+## Scripts Directory
 
 Operate directly from the root workspace:
 
