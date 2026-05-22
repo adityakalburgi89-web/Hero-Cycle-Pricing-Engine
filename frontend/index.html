@@ -3,38 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hero Cycle Pricing Configurator</title>
+  <title>Hero Cycles — Precision Configurator & Pricing</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Nav Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-accent">HERO</span>CYCLES
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#configurator-section" class="nav-cta">Launch Configurator</a>
+      </div>
+    </div>
+  </nav>
+
   <div id="app">
-    <header>
-      <h1>Hero Cycle Pricing Configurator</h1>
-      <p class="subtitle">Build your cycle and see the price breakdown</p>
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="hero-content">
+        <div class="hero-tag">PREMIUM CUSTOMIZATION</div>
+        <h1>Design Your Ultimate Ride. Priced with Precision.</h1>
+        <p class="subtitle">Experience the next generation of bicycle customization. Select premium components, explore price timelines, and get instant quotes tailored to your specs.</p>
+        <div class="hero-actions">
+          <a href="#configurator-section" class="btn btn-primary">Start Customizing</a>
+          <a href="#features" class="btn btn-secondary">Learn More</a>
+        </div>
+      </div>
+      
+      <!-- CSS Abstract Animated Wheel Graphic -->
+      <div class="hero-graphic-container">
+        <div class="glowing-ring-outer">
+          <div class="glowing-ring-inner"></div>
+          <div class="wheel-spokes"></div>
+          <div class="wheel-hub"></div>
+        </div>
+      </div>
     </header>
 
-    <section id="configurator">
-      <h2>Select Components</h2>
-      <div id="dropdowns"></div>
-
-      <div class="row">
-        <div class="field">
-          <label for="dateInput">Pricing Date</label>
-          <input type="date" id="dateInput" />
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <div class="section-title">
+        <h2>Why Configure with Hero?</h2>
+        <p>Uncompromising engineering meets transparent, time-sensitive pricing metrics.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🛠️</div>
+          <h3>Premium Catalog</h3>
+          <p>Mix and match top-tier frames, handlebars, wheels, and seating to match your performance style.</p>
         </div>
-        <button id="calculateBtn">Calculate Price</button>
+        <div class="feature-card">
+          <div class="feature-icon">⏳</div>
+          <h3>Historical Timeline</h3>
+          <p>Input a historical date to instantly see price changes and track cost fluctuations across seasons.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Instant Quotation</h3>
+          <p>Get immediate, detailed cost breakdowns by component tier with zero latency or hidden fees.</p>
+        </div>
       </div>
     </section>
 
-    <section id="result" class="hidden">
-      <h2>Price Breakdown</h2>
-      <div id="breakdown"></div>
-      <div id="totalRow">
-        <span id="dateInfo"></span>
-        <span id="total"></span>
-      </div>
-    </section>
+    <!-- Configurator Section Wrapper -->
+    <div id="configurator-section" class="scroll-margin">
+      <section id="configurator">
+        <h2>Select Components</h2>
+        <div id="dropdowns"></div>
+
+        <div class="row">
+          <div class="field">
+            <label for="dateInput">Pricing Date</label>
+            <input type="date" id="dateInput" />
+          </div>
+          <button id="calculateBtn">Calculate Price</button>
+        </div>
+      </section>
+
+      <!-- Results Breakdown Container -->
+      <section id="result" class="hidden">
+        <h2>Price Breakdown</h2>
+        <div id="breakdown"></div>
+        <div id="totalRow">
+          <span id="dateInfo"></span>
+          <span id="total"></span>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2026 Hero Cycles. All rights reserved. Precision Pricing Engine powered by Node.js & Express.</p>
+    </footer>
   </div>
+  
   <script src="script.js"></script>
 </body>
 </html>

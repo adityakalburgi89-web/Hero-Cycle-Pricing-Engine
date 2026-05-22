@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurator — Hero Cycle Pricing Engine</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">Hero Cycle</a>
+      <span class="nav-link active">Configurator</span>
+    </div>
+  </nav>
+
+  <div id="app">
+    <section id="configurator">
+      <h2>Select Components</h2>
+      <div id="dropdowns"></div>
+
+      <div class="row">
+        <div class="field">
+          <label for="dateInput">Pricing Date</label>
+          <input type="date" id="dateInput" />
+        </div>
+        <button id="calculateBtn">Calculate Price</button>
+      </div>
+    </section>
+
+    <section id="result" class="hidden">
+      <h2>Price Breakdown</h2>
+      <div id="breakdown"></div>
+      <div id="totalRow">
+        <span id="dateInfo"></span>
+        <span id="total"></span>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <p><a href="index.html">Home</a> &middot; Hero Cycle Pricing Engine</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

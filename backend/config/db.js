@@ -4,11 +4,15 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hero_cycle
 
 async function connectDB() {
   try {
-    await mongoose.connect(MONGO_URI);
-    console.log('MongoDB connected');
+    await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 2000 // 2 seconds timeout
+    });
+    console.log('MongoDB connected successfully');
+    global.useMockDb = false;
   } catch (err) {
-    console.error('MongoDB connection error:', err.message);
-    process.exit(1);
+    console.warn(`\n⚠️  Local MongoDB connection failed: ${err.message}`);
+    console.warn('⚡ Falling back to local in-memory Mock Database for seamless offline demo execution!\n');
+    global.useMockDb = true;
   }
 }
 
