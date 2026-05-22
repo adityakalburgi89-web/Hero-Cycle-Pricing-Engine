@@ -10,11 +10,21 @@ const dateInfoP = document.getElementById('dateInfo');
 const historySection = document.getElementById('history');
 const historyList = document.getElementById('historyList');
 
+function latestPrice(part) {
+  const sorted = [...part.priceHistory].sort(
+    (a, b) => new Date(b.validFrom) - new Date(a.validFrom)
+  );
+  return sorted.length > 0 ? sorted[0].price : 0;
+}
+
 async function loadParts() {
   const res = await fetch(`${API}/pricing/parts`);
   const parts = await res.json();
   partSelect.innerHTML = parts
-    .map((p) => `<option value="${p._id}">${p.name} - $${p.basePrice}</option>`)
+    .map(
+      (p) =>
+        `<option value="${p._id}">${p.name} - $${latestPrice(p)}</option>`
+    )
     .join('');
 }
 
@@ -35,7 +45,7 @@ calculateBtn.addEventListener('click', async () => {
   breakdownDiv.innerHTML = data.parts
     .map(
       (p) =>
-        `<div class="breakdown-item"><span>${p.name} (${p.category})</span><span>$${p.effectivePrice}</span></div>`
+        `<div class="breakdown-item"><span>${p.name} (${p.component})</span><span>$${p.effectivePrice}</span></div>`
     )
     .join('');
   totalP.textContent = `Total: $${data.total}`;
@@ -53,7 +63,10 @@ partSelect.addEventListener('change', async () => {
       historyList.innerHTML = history
         .map(
           (h) =>
-            `<div class="history-entry"><span>${new Date(h.date).toLocaleDateString()}</span><span>$${h.price} ${h.note ? '- ' + h.note : ''}</span></div>`
+            `<div class="history-entry">
+              <span>${new Date(h.validFrom).toLocaleDateString()} ${h.validUntil ? '→ ' + new Date(h.validUntil).toLocaleDateString() : '→ present'}</span>
+              <span>$${h.price}</span>
+            </div>`
         )
         .join('');
       historySection.classList.remove('hidden');

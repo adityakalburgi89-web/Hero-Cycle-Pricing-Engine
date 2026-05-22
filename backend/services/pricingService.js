@@ -1,5 +1,12 @@
 const Part = require('../models/Part');
-const PricingHistory = require('../models/PricingHistory');
+
+function findPriceAtDate(priceHistory, queryDate) {
+  const valid = priceHistory
+    .filter((entry) => entry.validFrom <= queryDate)
+    .sort((a, b) => b.validFrom - a.validFrom);
+
+  return valid.length > 0 ? valid[0] : null;
+}
 
 async function calculatePrice(partIds, date) {
   const queryDate = date ? new Date(date) : new Date();
@@ -10,29 +17,31 @@ async function calculatePrice(partIds, date) {
   const breakdown = [];
 
   for (const part of parts) {
-    const history = await PricingHistory.findOne({
-      partId: part._id,
-      date: { $lte: queryDate },
-    }).sort({ date: -1 });
+    const matched = findPriceAtDate(part.priceHistory, queryDate);
+    const effectivePrice = matched ? matched.price : 0;
 
-    const effectivePrice = history ? history.price : part.basePrice;
     total += effectivePrice;
 
     breakdown.push({
       partId: part._id,
       name: part.name,
-      category: part.category,
-      basePrice: part.basePrice,
+      component: part.component,
       effectivePrice,
-      priceAtDate: history ? history.price : null,
+      matchedFrom: matched ? matched.validFrom : null,
+      matchedUntil: matched ? matched.validUntil : null,
     });
   }
 
-  return { total: Math.round(total * 100) / 100, parts: breakdown, queriedDate: queryDate };
+  return {
+    total: Math.round(total * 100) / 100,
+    parts: breakdown,
+    queriedDate: queryDate,
+  };
 }
 
 async function getPricingHistory(partId) {
-  return PricingHistory.find({ partId }).sort({ date: -1 });
+  const part = await Part.findById(partId);
+  return part ? part.priceHistory.sort((a, b) => b.validFrom - a.validFrom) : [];
 }
 
 module.exports = { calculatePrice, getPricingHistory };
