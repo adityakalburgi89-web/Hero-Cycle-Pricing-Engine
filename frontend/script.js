@@ -68,7 +68,7 @@ function buildDropdowns(parts) {
       const options = compParts
         .map(
           (p) =>
-            `<option value="${p.name}">${formatPartName(p.name)} — $${latestPrice(p)}</option>`
+            `<option value="${p.name}">${formatPartName(p.name)} — ₹${latestPrice(p)}</option>`
         )
         .join('');
 
@@ -152,7 +152,7 @@ async function fetchPartHistory(partName, component) {
                 <span class="spec-date">${isActive ? 'Active Now' : 'Historical Tier'}</span>
                 <span class="spec-range">${fromDate} — ${toDate}</span>
               </div>
-              <span class="spec-cell-value">$${entry.price}</span>
+              <span class="spec-cell-value">₹${entry.price}</span>
             </div>
           `;
         })
@@ -202,12 +202,12 @@ calculateBtn.addEventListener('click', async () => {
             <span class="breakdown-part-name">${formatPartName(p.name)}</span>
             <span class="breakdown-part-comp">${componentLabels[p.component] || p.component}</span>
           </div>
-          <span class="breakdown-part-price">$${p.effectivePrice}</span>
+          <span class="breakdown-part-price">₹${p.effectivePrice}</span>
         </div>`
     )
     .join('');
 
-  totalP.textContent = `TOTAL: $${data.total}`;
+  totalP.textContent = `TOTAL: ₹${data.total}`;
   dateInfoP.textContent = `VALUATION LOGGED AS OF: ${new Date(data.queriedDate).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
