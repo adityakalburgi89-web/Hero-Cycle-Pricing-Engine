@@ -8,6 +8,26 @@ const breakdownDiv = document.getElementById('breakdown');
 const totalP = document.getElementById('total');
 const dateInfoP = document.getElementById('dateInfo');
 
+// Spec Panel Elements
+const specPlaceholder = document.getElementById('specPlaceholder');
+const specDetails = document.getElementById('specDetails');
+const specComponentLabel = document.getElementById('specComponentLabel');
+const specPartTitle = document.getElementById('specPartTitle');
+const specHistoryContainer = document.getElementById('specHistoryContainer');
+
+// Cookie Elements
+const cookieCard = document.getElementById('cookieCard');
+const cookieAcceptBtn = document.getElementById('cookieAcceptBtn');
+const cookieCloseBtn = document.getElementById('cookieCloseBtn');
+
+// Chatbot Elements
+const chatLauncher = document.getElementById('chatLauncher');
+const chatDrawer = document.getElementById('chatDrawer');
+const chatCloseBtn = document.getElementById('chatCloseBtn');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSendBtn = document.getElementById('chatSendBtn');
+
 const componentLabels = {
   frame: 'Frame',
   handlebar: 'Handlebar',
@@ -32,6 +52,7 @@ function formatPartName(name) {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+// Build select fields
 function buildDropdowns(parts) {
   const grouped = {};
   for (const part of parts) {
@@ -54,14 +75,103 @@ function buildDropdowns(parts) {
       return `
         <div class="field">
           <label for="comp-${comp}">${label}</label>
-          <select id="comp-${comp}" class="part-select">
-            <option value="">— Select —</option>
-            ${options}
-          </select>
+          <div class="select-wrapper">
+            <select id="comp-${comp}" class="part-select" data-component="${comp}">
+              <option value="">— Select ${label} —</option>
+              ${options}
+            </select>
+          </div>
         </div>
       `;
     })
     .join('');
+
+  // Attach change listeners to active component selections
+  const selects = document.querySelectorAll('.part-select');
+  selects.forEach((select) => {
+    select.addEventListener('change', (e) => {
+      const partName = e.target.value;
+      const component = e.target.dataset.component;
+      if (partName) {
+        fetchPartHistory(partName, component);
+      } else {
+        checkActiveSelection();
+      }
+    });
+  });
+}
+
+// Check if any dropdown is selected, otherwise reset the spec preview
+function checkActiveSelection() {
+  const selects = document.querySelectorAll('.part-select');
+  let activeSelect = null;
+  for (const select of selects) {
+    if (select.value) {
+      activeSelect = select;
+      break;
+    }
+  }
+
+  if (activeSelect) {
+    fetchPartHistory(activeSelect.value, activeSelect.dataset.component);
+  } else {
+    specDetails.classList.add('hidden');
+    specPlaceholder.classList.remove('hidden');
+  }
+}
+
+// Fetch part pricing history and render in right-hand spec dashboard panel
+async function fetchPartHistory(partName, component) {
+  try {
+    const res = await fetch(`${API}/pricing/history/${partName}`);
+    const history = await res.json();
+
+    specComponentLabel.textContent = componentLabels[component] || component;
+    specPartTitle.textContent = formatPartName(partName);
+
+    if (history && history.length > 0) {
+      specHistoryContainer.innerHTML = history
+        .map((entry, index) => {
+          const fromDate = new Date(entry.validFrom).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+          });
+          const toDate = entry.validUntil
+            ? new Date(entry.validUntil).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })
+            : 'Present';
+
+          const isActive = index === 0; // Most recent is active
+          return `
+            <div class="spec-cell ${isActive ? 'current-active' : ''}">
+              <div class="spec-cell-label">
+                <span class="spec-date">${isActive ? 'Active Now' : 'Historical Tier'}</span>
+                <span class="spec-range">${fromDate} — ${toDate}</span>
+              </div>
+              <span class="spec-cell-value">$${entry.price}</span>
+            </div>
+          `;
+        })
+        .join('');
+    } else {
+      specHistoryContainer.innerHTML = `
+        <div class="spec-cell">
+          <div class="spec-cell-label">
+            <span class="spec-date">No pricing records found</span>
+          </div>
+        </div>
+      `;
+    }
+
+    specPlaceholder.classList.add('hidden');
+    specDetails.classList.remove('hidden');
+  } catch (err) {
+    console.error('Error loading pricing history telemetry:', err);
+  }
 }
 
 calculateBtn.addEventListener('click', async () => {
@@ -72,7 +182,7 @@ calculateBtn.addEventListener('click', async () => {
     if (sel.value) selected.push(sel.value);
   }
 
-  if (selected.length === 0) return alert('Select at least one component.');
+  if (selected.length === 0) return alert('Please select at least one component specification to calculate pricing.');
 
   const date = dateInput.value || undefined;
 
@@ -88,24 +198,119 @@ calculateBtn.addEventListener('click', async () => {
     .map(
       (p) =>
         `<div class="breakdown-row">
-          <div>
-            <span class="part-name">${formatPartName(p.name)}</span>
-            <span class="part-component">${p.component}</span>
+          <div class="breakdown-part-info">
+            <span class="breakdown-part-name">${formatPartName(p.name)}</span>
+            <span class="breakdown-part-comp">${componentLabels[p.component] || p.component}</span>
           </div>
-          <span class="part-price">$${p.effectivePrice}</span>
+          <span class="breakdown-part-price">$${p.effectivePrice}</span>
         </div>`
     )
     .join('');
 
-  totalP.textContent = `Total: $${data.total}`;
-  dateInfoP.textContent = `Pricing as of ${new Date(data.queriedDate).toLocaleDateString()}`;
+  totalP.textContent = `TOTAL: $${data.total}`;
+  dateInfoP.textContent = `VALUATION LOGGED AS OF: ${new Date(data.queriedDate).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })}`;
   resultSection.classList.remove('hidden');
+  
+  // Smooth scroll to results
+  resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
+// --- Overlays and Widgets Action Wire-up ---
+
+// Cookie Card Check
+if (cookieCard) {
+  const isApproved = localStorage.getItem('hero_cookie_approved');
+  if (isApproved === 'true') {
+    cookieCard.classList.add('hidden');
+  }
+
+  cookieAcceptBtn.addEventListener('click', () => {
+    localStorage.setItem('hero_cookie_approved', 'true');
+    cookieCard.classList.add('hidden');
+  });
+
+  cookieCloseBtn.addEventListener('click', () => {
+    cookieCard.classList.add('hidden');
+  });
+}
+
+// Chatbot Active Telemetry Assistant
+if (chatLauncher && chatDrawer && chatCloseBtn) {
+  chatLauncher.addEventListener('click', () => {
+    chatDrawer.classList.toggle('open');
+  });
+
+  chatCloseBtn.addEventListener('click', () => {
+    chatDrawer.classList.remove('open');
+  });
+
+  // Chat message send handler
+  const sendChatMessage = () => {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    // Append user bubble
+    appendChatBubble(text, 'user');
+    chatInput.value = '';
+
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Play simulated response with micro-delay
+    setTimeout(() => {
+      const response = generateAssistantResponse(text);
+      appendChatBubble(response, 'assistant');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 600);
+  };
+
+  chatSendBtn.addEventListener('click', sendChatMessage);
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      sendChatMessage();
+    }
+  });
+}
+
+function appendChatBubble(text, sender) {
+  const bubble = document.createElement('div');
+  bubble.className = `chat-bubble ${sender}`;
+  bubble.textContent = text;
+  chatMessages.appendChild(bubble);
+}
+
+function generateAssistantResponse(query) {
+  const q = query.toLowerCase();
+  if (q.includes('carbon') || q.includes('frame')) {
+    return "Our M-Performance Carbon Frame is fabricated from high-modulus aerospace carbon layers. It reduces frame mass to just 980g while delivering absolute competitive torsional stiffness.";
+  }
+  if (q.includes('price') || q.includes('pricing') || q.includes('history') || q.includes('cost')) {
+    return "All components are modeled with time-sensitive pricing attributes. If you set a historical date in the configurator, our services dynamically inspect historical valid periods to display corresponding pricing metrics.";
+  }
+  if (q.includes('brake') || q.includes('brakes') || q.includes('hydraulic')) {
+    return "We offer Rim, Disc, and Hydraulic Brake systems. The active hydraulic braking tier utilizes dual-piston mineral oil calipers, guaranteeing solid braking pressure even under wet track conditions.";
+  }
+  if (q.includes('wheel') || q.includes('tyre') || q.includes('tubeless')) {
+    return "Our M-Performance Tubeless Wheel sets use an anodized aluminum double-wall profile. Running at 120 PSI provides minimal rolling resistance and absolute bead seating safety.";
+  }
+  if (q.includes('saddle') || q.includes('seating')) {
+    return "Comfort saddles feature pressure-relief zones, while Racing saddles utilize carbon-reinforced hulls with micro-fiber outer covers to optimize driver weight transfer.";
+  }
+  return "Active telemetry received. Telemetry system is fully connected. Select components in the active configurator block on the page to query real-time pricing trends!";
+}
+
 async function init() {
-  const res = await fetch(`${API}/pricing/parts`);
-  const parts = await res.json();
-  buildDropdowns(parts);
+  try {
+    const res = await fetch(`${API}/pricing/parts`);
+    const parts = await res.json();
+    buildDropdowns(parts);
+  } catch (err) {
+    console.error('Failed to initialize configurator dropdown telemetry:', err);
+  }
 }
 
 init();

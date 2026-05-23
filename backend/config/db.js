@@ -10,8 +10,8 @@ async function connectDB() {
     console.log('MongoDB connected successfully');
     global.useMockDb = false;
   } catch (err) {
-    console.warn(`\n⚠️  Local MongoDB connection failed: ${err.message}`);
-    console.warn('⚡ Falling back to local in-memory Mock Database for seamless offline demo execution!\n');
+    console.warn(`\n  Local MongoDB connection failed: ${err.message}`);
+    console.warn(' Falling back to local in-memory Mock Database for seamless offline demo execution!\n');
     global.useMockDb = true;
   }
 }

@@ -3,44 +3,138 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Configurator — Hero Cycle Pricing Engine</title>
+  <title>Configurator — Hero Cycle M-Performance Pricing Engine</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Navigation Pinned Bar -->
   <nav class="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-brand">Hero Cycle</a>
-      <span class="nav-link active">Configurator</span>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-stripe"></div>
+        HERO<span>M PERFORMANCE</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="configurator.html" class="active">Configurator</a>
+      </div>
     </div>
   </nav>
 
-  <div id="app">
-    <section id="configurator">
-      <h2>Select Components</h2>
-      <div id="dropdowns"></div>
+  <!-- Title Padding for Fixed Nav -->
+  <div style="height: 120px; background-color: var(--color-canvas);"></div>
 
-      <div class="row">
-        <div class="field">
-          <label for="dateInput">Pricing Date</label>
-          <input type="date" id="dateInput" />
+  <!-- Configurator Dashboard Section -->
+  <div id="configurator-section">
+    <section class="configurator-section" style="padding-top: 0;">
+      <div class="container">
+        <div class="configurator-title">
+          <span class="label-uppercase" style="color: var(--color-m-blue-dark); margin-bottom: 8px;">ACTIVE LABORATORY</span>
+          <h2 class="display-lg">M-PERFORMANCE CONFIGURATOR</h2>
         </div>
-        <button id="calculateBtn">Calculate Price</button>
-      </div>
-    </section>
 
-    <section id="result" class="hidden">
-      <h2>Price Breakdown</h2>
-      <div id="breakdown"></div>
-      <div id="totalRow">
-        <span id="dateInfo"></span>
-        <span id="total"></span>
+        <div class="configurator-dashboard">
+          <!-- Left side input panel -->
+          <div id="configurator">
+            <h3 class="title-lg" style="text-transform: uppercase;">1. CHOOSE COMPONENTS</h3>
+            <div id="dropdowns">
+              <!-- Dynamically populated selects from script.js -->
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="dateInput">PRICING HISTORICAL DATE</label>
+                <input type="date" id="dateInput" class="text-input-field" />
+              </div>
+              <button id="calculateBtn" class="btn btn-primary">CALCULATE SPEC</button>
+            </div>
+          </div>
+
+          <!-- Right side interactive specifications panel -->
+          <div class="spec-dashboard-panel">
+            <div id="activeSpecView" class="spec-active-view">
+              <div class="spec-placeholder" id="specPlaceholder">
+                <div class="spec-placeholder-icon">⚇</div>
+                <h4 class="label-uppercase">TELEMETRY PREVIEW</h4>
+                <p class="body-sm" style="margin-top: 8px;">Select a cycle component from the menu to activate telemetry feeds and view its live historical pricing timeline.</p>
+              </div>
+              
+              <div class="hidden" id="specDetails">
+                <div class="spec-active-header">
+                  <span id="specComponentLabel">FRAME</span>
+                  <h4 id="specPartTitle">STEEL FRAME</h4>
+                </div>
+                <h5 class="label-uppercase" style="font-size: 11px; margin-bottom: 12px; color: var(--color-muted);">HISTORICAL VALUATION TREND</h5>
+                <div class="spec-history-container" id="specHistoryContainer">
+                  <!-- Pricing history cells dynamically loaded here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculated Price Breakdown Section -->
+        <section id="result" class="hidden">
+          <span class="label-uppercase" style="color: var(--color-success); margin-bottom: 8px; display: inline-block;">CALCULATION COMPLETED</span>
+          <h3 class="display-sm">PRECISION VALUATION REPORT</h3>
+          
+          <div id="breakdown">
+            <!-- Dynamic pricing breakdown rows go here -->
+          </div>
+          
+          <div id="totalRow">
+            <span id="dateInfo" class="body-md"></span>
+            <span id="total" class="display-sm">TOTAL: $0.00</span>
+          </div>
+        </section>
       </div>
     </section>
   </div>
 
+  <!-- Footer -->
   <footer class="footer">
-    <p><a href="index.html">Home</a> &middot; Hero Cycle Pricing Engine</p>
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Hero Cycles M Division. All rights reserved. Under engineering supervision of BMW M guidelines. Powered by Node.js & Express.</p>
+        <div class="footer-bottom-links">
+          <a href="index.html">Home</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+        </div>
+      </div>
+    </div>
   </footer>
+
+  <!-- Chatbot Launcher Widget -->
+  <div class="chatbot-launcher" id="chatLauncher">
+    <div class="chatbot-launcher-icon"></div>
+    <div class="chatbot-launcher-text">
+      <h4>HERO M ASSISTANT</h4>
+      <span>Online Telemetry</span>
+    </div>
+  </div>
+
+  <!-- Chatbot Slide-out Drawer -->
+  <div class="chatbot-drawer" id="chatDrawer">
+    <div class="chatbot-header">
+      <div class="chatbot-header-title">
+        <h4>M-PERFORMANCE ASSISTANT</h4>
+        <span>CONNECTED TELEMETRY FEED</span>
+      </div>
+      <button class="chatbot-close-btn" id="chatCloseBtn">&times;</button>
+    </div>
+    
+    <div class="chatbot-messages" id="chatMessages">
+      <div class="chat-bubble assistant">
+        Welcome to the Hero M-Performance division. I am your active telemetry assistant. Ask me anything about our frame weights, component materials, or pricing history trends!
+      </div>
+    </div>
+    
+    <div class="chatbot-input-area">
+      <input type="text" class="chatbot-input" id="chatInput" placeholder="Enter telemetry query..." />
+      <button class="chatbot-send-btn" id="chatSendBtn">SEND</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

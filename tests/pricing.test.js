@@ -1,4 +1,4 @@
-const { describe, it, before } = require('node:test');
+const { describe, it, beforeEach } = require('node:test');
 const assert = require('node:assert');
 const mongoose = require('mongoose');
 const Part = require('../backend/models/Part');
@@ -6,8 +6,19 @@ const { calculatePrice } = require('../backend/services/pricingService');
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hero_cycle_pricing_test';
 
-before(async () => {
-  await mongoose.connect(MONGO_URI);
+beforeEach(async () => {
+  if (mongoose.connection.readyState === 0) {
+    try {
+      await mongoose.connect(MONGO_URI, {
+        serverSelectionTimeoutMS: 2000
+      });
+      global.useMockDb = false;
+    } catch (err) {
+      console.warn(`\n⚠️  Test MongoDB connection failed: ${err.message}`);
+      console.warn('⚡ Falling back to in-memory Mock Database for tests!\n');
+      global.useMockDb = true;
+    }
+  }
   await Part.deleteMany({});
 });
 
