@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hero_cycle_pricing';
 
 async function connectDB() {
+  if (mongoose.connection && mongoose.connection.readyState >= 1) {
+    return;
+  }
   try {
     await mongoose.connect(MONGO_URI, {
       serverSelectionTimeoutMS: 2000 // 2 seconds timeout

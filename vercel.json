@@ -4,12 +4,16 @@
     {
       "src": "frontend/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "https://hero-cycle-pricing-backend.onrender.com/api/$1"
+      "dest": "backend/server.js"
     },
     {
       "src": "/Assets/(.*)",
