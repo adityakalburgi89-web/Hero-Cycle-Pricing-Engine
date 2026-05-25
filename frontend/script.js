@@ -1,4 +1,6 @@
-const API = 'http://localhost:5000/api';
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000/api'
+  : '/api';
 
 const dropdownsEl = document.getElementById('dropdowns');
 const dateInput = document.getElementById('dateInput');
