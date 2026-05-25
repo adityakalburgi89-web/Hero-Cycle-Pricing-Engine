@@ -1,33 +1,32 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "https://hero-cycle-pricing-backend.onrender.com/api/:path*"
+      "src": "/api/(.*)",
+      "dest": "https://hero-cycle-pricing-backend.onrender.com/api/$1"
     },
     {
-      "source": "/",
-      "destination": "/frontend/index.html"
+      "src": "/Assets/(.*)",
+      "dest": "/frontend/Assets/$1"
     },
     {
-      "source": "/index.html",
-      "destination": "/frontend/index.html"
+      "src": "/style.css",
+      "dest": "/frontend/style.css"
     },
     {
-      "source": "/configurator.html",
-      "destination": "/frontend/configurator.html"
+      "src": "/script.js",
+      "dest": "/frontend/script.js"
     },
     {
-      "source": "/style.css",
-      "destination": "/frontend/style.css"
+      "src": "/configurator.html",
+      "dest": "/frontend/configurator.html"
     },
     {
-      "source": "/script.js",
-      "destination": "/frontend/script.js"
+      "src": "/index.html",
+      "dest": "/frontend/index.html"
     },
     {
-      "source": "/Assets/:path*",
-      "destination": "/frontend/Assets/:path*"
+      "src": "/$",
+      "dest": "/frontend/index.html"
     }
   ]
 }
