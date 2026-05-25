@@ -62,6 +62,10 @@ body {
   position: relative;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* --- Typography System --- */
 .display-xl {
   font-family: var(--font-display);
