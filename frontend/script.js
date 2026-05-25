@@ -16,6 +16,11 @@ const specDetails = document.getElementById('specDetails');
 const specComponentLabel = document.getElementById('specComponentLabel');
 const specPartTitle = document.getElementById('specPartTitle');
 const specHistoryContainer = document.getElementById('specHistoryContainer');
+const specDashboardPanel = document.querySelector('.spec-dashboard-panel');
+
+// Navigation Selectors
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
 
 // Cookie Elements
 const cookieCard = document.getElementById('cookieCard');
@@ -171,6 +176,13 @@ async function fetchPartHistory(partName, component) {
 
     specPlaceholder.classList.add('hidden');
     specDetails.classList.remove('hidden');
+
+    // Auto-scroll on smaller viewports to highlight loaded pricing history telemetry
+    if (window.innerWidth <= 1024 && specDashboardPanel) {
+      setTimeout(() => {
+        specDashboardPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
   } catch (err) {
     console.error('Error loading pricing history telemetry:', err);
   }
@@ -223,20 +235,40 @@ calculateBtn.addEventListener('click', async () => {
 
 // --- Overlays and Widgets Action Wire-up ---
 
+// Mobile Menu Toggle
+if (menuToggle && navLinks) {
+  menuToggle.addEventListener('click', () => {
+    menuToggle.classList.toggle('open');
+    navLinks.classList.toggle('open');
+  });
+
+  // Close navigation menu when clicking an option/anchor link
+  const links = navLinks.querySelectorAll('a');
+  links.forEach((link) => {
+    link.addEventListener('click', () => {
+      menuToggle.classList.remove('open');
+      navLinks.classList.remove('open');
+    });
+  });
+}
+
 // Cookie Card Check
 if (cookieCard) {
   const isApproved = localStorage.getItem('hero_cookie_approved');
   if (isApproved === 'true') {
     cookieCard.classList.add('hidden');
+    document.body.classList.add('cookie-closed');
   }
 
   cookieAcceptBtn.addEventListener('click', () => {
     localStorage.setItem('hero_cookie_approved', 'true');
     cookieCard.classList.add('hidden');
+    document.body.classList.add('cookie-closed');
   });
 
   cookieCloseBtn.addEventListener('click', () => {
     cookieCard.classList.add('hidden');
+    document.body.classList.add('cookie-closed');
   });
 }
 
